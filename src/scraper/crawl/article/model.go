@@ -2,13 +2,16 @@ package article
 
 import (
 	"fmt"
+	"go.mongodb.org/mongo-driver/bson/primitive"
+	"medium-scraper-cli/src/scraper/db"
 	"time"
 )
 
 type Article struct {
-	title   string `json:"title"`
-	content string `json:"content"`
-	date    string `json:"date"`
+	ID      primitive.ObjectID `bson:"_id,omitempty"`
+	Title   string             `bson:"title,omitempty"`
+	Content string             `bson:"content,omitempty"`
+	Date    string             `bson:"date,omitempty"`
 }
 
 func NewArticle(title string, content string) *Article {
@@ -18,8 +21,28 @@ func NewArticle(title string, content string) *Article {
 	date := fmt.Sprintf("%v-%v-%v", year, int(month), day)
 
 	return &Article{
-		title:   title,
-		content: content,
-		date:    date,
+		Title:   title,
+		Content: content,
+		Date:    date,
 	}
+}
+
+func (article *Article) SaveOnMongoDB() (string, error) {
+
+	client, ctx, cancel, err := db.ConnectMongo()
+	if err != nil {
+		return "", nil
+	}
+
+	defer db.CloseMongo(client, ctx, cancel)
+
+	collection := client.Database("Crawl").Collection("Article")
+	result, err := collection.InsertOne(ctx, article)
+	if err != nil {
+		return "FAIL", err
+	}
+
+	message := fmt.Sprintf("Article Inserted: %v", result.InsertedID)
+
+	return message, nil
 }
