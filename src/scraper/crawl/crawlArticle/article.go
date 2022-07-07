@@ -1,4 +1,4 @@
-package article
+package crawlArticle
 
 import (
 	"fmt"
@@ -38,5 +38,5 @@ func ScrapeArticle(url string) (string, error) {
 		return message, err
 	}
 
-	return "SUCCESS", nil
+	return message, nil
 }

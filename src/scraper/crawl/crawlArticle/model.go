@@ -1,8 +1,9 @@
-package article
+package crawlArticle
 
 import (
 	"fmt"
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	"medium-scraper-cli/src/scraper/crawl"
 	"medium-scraper-cli/src/scraper/db"
 	"time"
 )
@@ -36,7 +37,7 @@ func (article *Article) SaveOnMongoDB() (string, error) {
 
 	defer db.CloseMongo(client, ctx, cancel)
 
-	collection := client.Database("Crawl").Collection("Article")
+	collection := client.Database(crawl.DatabaseName).Collection(crawl.ArticleCollection)
 	result, err := collection.InsertOne(ctx, article)
 	if err != nil {
 		return "FAIL", err
