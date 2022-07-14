@@ -9,22 +9,19 @@ import (
 
 var addCmd = &cobra.Command{
 	Use:   "article",
-	Short: "",
+	Short: "-p",
 	Long:  ``,
 	Run: func(cmd *cobra.Command, args []string) {
 
-		newArgs := strings.Join(args, "")
-		newArgs = strings.Trim(newArgs, " ")
-
-		options := strings.Split(newArgs, "=")
-		if len(options) == 1 {
-			options = append(options, "null")
+		if len(args) == 1 {
+			args = append(args, "null")
 		}
 
-		fmt.Println(options)
+		title := args[0]
+		params := strings.Join(args[1:], " ")
 
-		title := options[0]
-		params := options[1]
+		fmt.Println(title)
+		fmt.Println(params)
 
 		switch title {
 		case "url":
